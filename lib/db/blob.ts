@@ -1,6 +1,7 @@
 import "server-only"
 
 import {
+  type BlobAccessType,
   BlobNotFoundError,
   BlobPreconditionFailedError,
   del,
@@ -18,6 +19,57 @@ const MAX_BACKUPS = 20
 
 /** Blob's minimum permitted cache TTL is 60s; reads bypass it with useCache:false. */
 const CACHE_MAX_AGE = 60
+
+/**
+ * Access mode of the Blob store.
+ *
+ * "private" is the right default here: db.json holds the full names of
+ * children, and a public blob is readable by anyone who learns its URL. Only
+ * this server ever reads it — the browser always goes through /api/db.
+ *
+ * A store is created as either public or private and the SDK rejects the wrong
+ * mode outright ("Cannot use public access on a private store"), which is a
+ * 500 that is very hard to diagnose from the browser. So the mode is detected
+ * once from the store's own error and reused.
+ */
+let accessMode: BlobAccessType = "private"
+
+function isAccessMismatch(err: unknown): boolean {
+  return (
+    err instanceof Error &&
+    /cannot use (public|private) access on a (private|public) store/i.test(
+      err.message
+    )
+  )
+}
+
+/** Run a Blob call, flipping the access mode once if the store disagrees. */
+async function withAccess<T>(
+  fn: (access: BlobAccessType) => Promise<T>
+): Promise<T> {
+  try {
+    return await fn(accessMode)
+  } catch (err) {
+    if (!isAccessMismatch(err)) throw err
+    accessMode = accessMode === "private" ? "public" : "private"
+    return fn(accessMode)
+  }
+}
+
+/**
+ * Normalise an ETag to its strong form.
+ *
+ * `get()` returns a *weak* validator (`W/"abc…"`) once the payload is large
+ * enough for the response to be compressed, but `put({ ifMatch })` only ever
+ * matches the *strong* form (`"abc…"`) that `put()` itself returns. Handing the
+ * weak tag straight back makes every conditional write fail its precondition,
+ * so the roster silently stops saving once it grows past a few hundred bytes —
+ * tiny test payloads pass, real ones don't.
+ */
+function strongEtag(etag: string | null | undefined): string | null {
+  if (!etag) return null
+  return etag.replace(/^W\//, "")
+}
 
 export class ConflictError extends Error {
   constructor(public readonly current: LoadedDatabase) {
@@ -85,12 +137,14 @@ export async function readDatabase(): Promise<LoadedDatabase> {
   if (!isBlobConfigured()) return { db: emptyDatabase(), etag: null }
 
   try {
-    const res = await get(DB_PATH, { access: "public", useCache: false })
+    const res = await withAccess((access) =>
+      get(DB_PATH, { access, useCache: false })
+    )
     if (!res || res.statusCode !== 200)
       return { db: emptyDatabase(), etag: null }
 
     const text = await new Response(res.stream).text()
-    return { db: coerce(JSON.parse(text)), etag: res.blob.etag }
+    return { db: coerce(JSON.parse(text)), etag: strongEtag(res.blob.etag) }
   } catch (err) {
     // First ever run: nothing has been written yet.
     if (err instanceof BlobNotFoundError)
@@ -122,17 +176,21 @@ export async function writeDatabase(
     updatedAt: Date.now(),
   }
 
+  const ifMatch = strongEtag(expectedEtag)
+
   try {
-    const res = await put(DB_PATH, JSON.stringify(payload), {
-      access: "public",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      cacheControlMaxAge: CACHE_MAX_AGE,
-      // Omitted on first write, when there is no blob to match against.
-      ...(expectedEtag ? { ifMatch: expectedEtag } : {}),
-    })
-    return { db: payload, etag: res.etag ?? null }
+    const res = await withAccess((access) =>
+      put(DB_PATH, JSON.stringify(payload), {
+        access,
+        contentType: "application/json",
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        cacheControlMaxAge: CACHE_MAX_AGE,
+        // Omitted on first write, when there is no blob to match against.
+        ...(ifMatch ? { ifMatch } : {}),
+      })
+    )
+    return { db: payload, etag: strongEtag(res.etag) }
   } catch (err) {
     if (err instanceof BlobPreconditionFailedError) {
       throw new ConflictError(await readDatabase())
@@ -150,13 +208,15 @@ export async function snapshot(db: Database): Promise<void> {
   if (!isBlobConfigured() || db.atfal.length === 0) return
 
   const stamp = new Date().toISOString().replace(/[:.]/g, "-")
-  await put(`${BACKUP_PREFIX}db-${stamp}.json`, JSON.stringify(db), {
-    access: "public",
-    contentType: "application/json",
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    cacheControlMaxAge: CACHE_MAX_AGE,
-  })
+  await withAccess((access) =>
+    put(`${BACKUP_PREFIX}db-${stamp}.json`, JSON.stringify(db), {
+      access,
+      contentType: "application/json",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      cacheControlMaxAge: CACHE_MAX_AGE,
+    })
+  )
   await pruneBackups()
 }
 
@@ -167,7 +227,8 @@ async function pruneBackups() {
   const stale = blobs
     .sort((a, b) => +new Date(b.uploadedAt) - +new Date(a.uploadedAt))
     .slice(MAX_BACKUPS)
-  if (stale.length) await del(stale.map((b) => b.url))
+  // Delete by pathname: a private store's blob URLs are not directly usable.
+  if (stale.length) await del(stale.map((b) => b.pathname))
 }
 
 export async function listBackups(): Promise<BackupEntry[]> {
@@ -176,7 +237,6 @@ export async function listBackups(): Promise<BackupEntry[]> {
   return blobs
     .map((b) => ({
       pathname: b.pathname,
-      url: b.url,
       size: b.size,
       uploadedAt: new Date(b.uploadedAt).toISOString(),
     }))
@@ -186,7 +246,9 @@ export async function listBackups(): Promise<BackupEntry[]> {
 export async function readBackup(pathname: string): Promise<Database> {
   if (!pathname.startsWith(BACKUP_PREFIX))
     throw new Error("Invalid backup path")
-  const res = await get(pathname, { access: "public", useCache: false })
+  const res = await withAccess((access) =>
+    get(pathname, { access, useCache: false })
+  )
   if (!res || res.statusCode !== 200) throw new Error("Backup not found")
   return coerce(JSON.parse(await new Response(res.stream).text()))
 }

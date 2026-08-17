@@ -22,9 +22,14 @@ and the header shows **"This device only"**.
 
 1. Push the repo and import it in Vercel.
 2. **Storage → Create → Blob**, then connect the store to the project. Vercel
-   injects `BLOB_READ_WRITE_TOKEN` automatically.
-3. Deploy. The roster lives at `certificates/db.json` inside the Blob store and
-   is shared by everyone who opens the link.
+   injects `BLOB_READ_WRITE_TOKEN` automatically. A **private** store is
+   recommended — the roster holds children's names, and only the server reads
+   it. (A public store also works; the access mode is detected automatically.)
+3. **Redeploy after connecting the store.** Env vars are bound at build time, so
+   a deployment created before the store existed will not see the token and the
+   app will stay in "This device only" mode.
+4. The roster lives at `certificates/db.json` inside the Blob store and is
+   shared by everyone who opens the link.
 
 > The app has **no login**, by design. Anyone with the URL can view, edit and
 > clear the roster. Every destructive action snapshots the previous state to
@@ -74,6 +79,16 @@ A few decisions in here are load-bearing and easy to undo by accident:
 - **`lib/db/merge.ts`** decides what happens when two people edit at once. It has
   a real 3-way merge when the common ancestor is known and a never-delete union
   when it isn't. Read the comments before changing it.
+- **ETags must be normalised to their strong form** before use as `ifMatch`.
+  Blob's `get()` returns a *weak* validator (`W/"abc…"`) once the payload is big
+  enough to be compressed, while `put({ ifMatch })` only matches the strong form
+  (`"abc…"`). Skip `strongEtag()` and every save fails its precondition — but
+  only once the roster grows past a few hundred bytes, so small tests pass and
+  real data doesn't.
+- **The Blob store's access mode must match.** A store is created public or
+  private and the SDK hard-errors on the wrong one. `lib/db/blob.ts` defaults to
+  **private** (correct — `db.json` holds children's names) and auto-detects if
+  the store turns out to be public.
 
 ## Scripts
 

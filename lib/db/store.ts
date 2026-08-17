@@ -130,6 +130,14 @@ export async function flush(): Promise<void> {
     return inFlight
   }
 
+  // Boot hasn't answered yet, so we don't know the etag or whether a Blob
+  // store even exists. Editing the moment the page loads used to fire a PUT
+  // into that gap. The change is already in localStorage; try again shortly.
+  if (!state.ready) {
+    scheduleSync(wantsSnapshot)
+    return
+  }
+
   // No Blob store linked: the localStorage copy written by mutate() is the
   // only store there is. Posting would just 500 and surface a scary error for
   // what is a supported local-only mode.

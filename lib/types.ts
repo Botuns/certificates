@@ -48,7 +48,6 @@ export type Database = {
 
 export type BackupEntry = {
   pathname: string
-  url: string
   size: number
   uploadedAt: string
 }
