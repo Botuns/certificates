@@ -4,73 +4,80 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Brand greens sampled directly from the Ijtema certificate:
+   #009000 bright · #007500 mid · #004700 dark · #292929 ink */
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
+    --background: oklch(0.9730 0.0051 145.54);
+    --foreground: oklch(0.2809 0 0);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
+    --card-foreground: oklch(0.2809 0 0);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.2809 0 0);
+    --primary: oklch(0.5661 0.1926 142.5);
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.9529 0.0237 145.39);
+    --secondary-foreground: oklch(0.3448 0.1173 142.5);
+    --muted: oklch(0.9645 0.0045 145.5);
+    --muted-foreground: oklch(0.5314 0.0132 145.5);
+    --accent: oklch(0.9529 0.0237 145.39);
+    --accent-foreground: oklch(0.3448 0.1173 142.5);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --border: oklch(0.9101 0.0064 145.5);
+    --input: oklch(0.9101 0.0064 145.5);
+    --ring: oklch(0.5661 0.1926 142.5);
+    --chart-1: oklch(0.5661 0.1926 142.5);
+    --chart-2: oklch(0.4873 0.1658 142.5);
+    --chart-3: oklch(0.6712 0.1614 142.5);
+    --chart-4: oklch(0.7761 0.1183 145.0);
+    --chart-5: oklch(0.3448 0.1173 142.5);
+    --radius: 1rem;
+    --sidebar: oklch(1 0 0);
+    --sidebar-foreground: oklch(0.2809 0 0);
+    --sidebar-primary: oklch(0.5661 0.1926 142.5);
+    --sidebar-primary-foreground: oklch(1 0 0);
+    --sidebar-accent: oklch(0.9529 0.0237 145.39);
+    --sidebar-accent-foreground: oklch(0.3448 0.1173 142.5);
+    --sidebar-border: oklch(0.9401 0.0044 145.5);
+    --sidebar-ring: oklch(0.5661 0.1926 142.5);
+
+    --brand-bright: #009000;
+    --brand-mid: #007500;
+    --brand-dark: #004700;
+    --brand-ink: #292929;
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
+    --background: oklch(0.1822 0.0128 145.5);
+    --foreground: oklch(0.9646 0.0058 145.5);
+    --card: oklch(0.2262 0.0166 145.5);
+    --card-foreground: oklch(0.9646 0.0058 145.5);
+    --popover: oklch(0.2262 0.0166 145.5);
+    --popover-foreground: oklch(0.9646 0.0058 145.5);
+    --primary: oklch(0.6712 0.1814 142.5);
+    --primary-foreground: oklch(0.1822 0.0128 145.5);
+    --secondary: oklch(0.2822 0.0288 145.5);
+    --secondary-foreground: oklch(0.9646 0.0058 145.5);
+    --muted: oklch(0.2722 0.0166 145.5);
+    --muted-foreground: oklch(0.7146 0.0158 145.5);
+    --accent: oklch(0.3122 0.0488 145.5);
+    --accent-foreground: oklch(0.9646 0.0058 145.5);
     --destructive: oklch(0.704 0.191 22.216);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --ring: oklch(0.6712 0.1814 142.5);
+    --chart-1: oklch(0.6712 0.1814 142.5);
+    --chart-2: oklch(0.5661 0.1926 142.5);
+    --chart-3: oklch(0.7761 0.1183 145.0);
+    --chart-4: oklch(0.4873 0.1658 142.5);
+    --chart-5: oklch(0.8461 0.0883 145.0);
+    --sidebar: oklch(0.2262 0.0166 145.5);
+    --sidebar-foreground: oklch(0.9646 0.0058 145.5);
+    --sidebar-primary: oklch(0.6712 0.1814 142.5);
+    --sidebar-primary-foreground: oklch(0.1822 0.0128 145.5);
+    --sidebar-accent: oklch(0.3122 0.0488 145.5);
+    --sidebar-accent-foreground: oklch(0.9646 0.0058 145.5);
     --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --sidebar-ring: oklch(0.6712 0.1814 142.5);
 }
 
 @theme inline {
@@ -129,4 +136,177 @@
   html {
     @apply font-sans;
     }
+}
+
+
+/* ---- Certificate fonts ------------------------------------------------
+   Prefixed family names ("CertPoppins", not "Poppins") on purpose: a bare
+   family name could silently resolve to a same-named font installed on the
+   user's machine, so the on-screen preview would use different metrics than
+   the TTF we embed in the PDF. Prefixing makes preview == export. */
+@font-face {
+  font-family: "CertPoppins";
+  src: url("/fonts/poppins-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPoppins";
+  src: url("/fonts/poppins-600.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPoppins";
+  src: url("/fonts/poppins-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPoppins";
+  src: url("/fonts/poppins-400i.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPoppins";
+  src: url("/fonts/poppins-600i.ttf") format("truetype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPoppins";
+  src: url("/fonts/poppins-700i.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertMontserrat";
+  src: url("/fonts/montserrat-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertMontserrat";
+  src: url("/fonts/montserrat-600.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertMontserrat";
+  src: url("/fonts/montserrat-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertMontserrat";
+  src: url("/fonts/montserrat-400i.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertMontserrat";
+  src: url("/fonts/montserrat-600i.ttf") format("truetype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertMontserrat";
+  src: url("/fonts/montserrat-700i.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPlayfair";
+  src: url("/fonts/playfair-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPlayfair";
+  src: url("/fonts/playfair-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPlayfair";
+  src: url("/fonts/playfair-400i.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertPlayfair";
+  src: url("/fonts/playfair-700i.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertGaramond";
+  src: url("/fonts/garamond-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertGaramond";
+  src: url("/fonts/garamond-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertGaramond";
+  src: url("/fonts/garamond-400i.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertGaramond";
+  src: url("/fonts/garamond-700i.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertCinzel";
+  src: url("/fonts/cinzel-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertCinzel";
+  src: url("/fonts/cinzel-700.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CertGreatVibes";
+  src: url("/fonts/greatvibes-400.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 }
